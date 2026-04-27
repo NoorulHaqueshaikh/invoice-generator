@@ -5,17 +5,43 @@ import axios from "axios";
 
 // Common Indian states for the dropdown
 const INDIAN_STATES = [
-  "Maharashtra",
-  "Karnataka",
-  "Delhi",
+  "Andhra Pradesh",
+  "Arunachal Pradesh",
+  "Assam",
+  "Bihar",
+  "Chhattisgarh",
+  "Goa",
   "Gujarat",
-  "Tamil Nadu",
-  "Uttar Pradesh",
-  "Telangana",
-  "West Bengal",
   "Haryana",
+  "Himachal Pradesh",
+  "Jharkhand",
+  "Karnataka",
+  "Kerala",
+  "Madhya Pradesh",
+  "Maharashtra",
+  "Manipur",
+  "Meghalaya",
+  "Mizoram",
+  "Nagaland",
+  "Odisha",
+  "Punjab",
   "Rajasthan",
-];
+  "Sikkim",
+  "Tamil Nadu",
+  "Telangana",
+  "Tripura",
+  "Uttar Pradesh",
+  "Uttarakhand",
+  "West Bengal",
+  "Andaman and Nicobar Islands",
+  "Chandigarh",
+  "Dadra and Nagar Haveli and Daman and Diu",
+  "Delhi",
+  "Jammu and Kashmir",
+  "Ladakh",
+  "Lakshadweep",
+  "Puducherry",
+].sort();
 
 // Helper to convert base64 to File/Blob for Multer
 const dataURLtoFile = (dataurl, filename) => {
@@ -84,11 +110,12 @@ const Input = ({
       value={value}
       onChange={onChange}
       placeholder={placeholder}
-      className={`px-3 py-2 bg-[#F9FAFB] border ${error ? "border-red-500 focus:ring-red-500 focus:border-red-500" : "border-[#E5E7EB] focus:ring-[#2563EB] focus:border-[#2563EB]"} rounded-md text-sm focus:outline-none focus:ring-1 transition-all text-[#111827] w-full`}
+      className={`px-3 py-2 bg-white border border-[#D1D5DB] hover:border-[#2563EB] ${error ? "border-red-500 focus:ring-red-500 focus:border-red-500" : "focus:ring-[#2563EB] focus:border-[#2563EB]"} rounded-md text-sm focus:outline-none focus:ring-1 transition-all text-[#111827] w-full`}
     />
     {error && <span className="text-[10px] text-red-500">{error}</span>}
   </div>
 );
+
 
 const PhoneInput = ({ label, value, onChange, error }) => (
   <div className="flex flex-col gap-1 w-full">
@@ -110,26 +137,63 @@ const PhoneInput = ({ label, value, onChange, error }) => (
   </div>
 );
 
-const Select = ({ label, value, onChange, required }) => (
-  <div className="flex flex-col gap-1 w-full">
-    <label className="text-xs font-semibold text-[#111827] uppercase tracking-wider">
-      {label} {required && <span className="text-red-400">*</span>}
-    </label>
-    <select
-      value={value}
-      onChange={onChange}
-      className="px-3 py-2 bg-[#F9FAFB] border border-[#E5E7EB] rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-[#2563EB] focus:border-[#2563EB] transition-all text-[#111827] w-full"
-    >
-      <option value="">Select State</option>
-      {INDIAN_STATES.map((state) => (
-        <option key={state} value={state}>
-          {state}
-        </option>
-      ))}
-    </select>
-  </div>
-);
-// 🌟 END MOVED COMPONENTS
+const StateSelect = ({ label, value, onChange, required }) => {
+  const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState("");
+
+  const filteredStates = INDIAN_STATES.filter((state) =>
+    state.toLowerCase().includes(search.toLowerCase()),
+  );
+
+  return (
+    <div className="relative w-full state-dropdown">
+      <label className="text-xs font-semibold text-[#111827] uppercase tracking-wider">
+        {label} {required && <span className="text-red-400">*</span>}
+      </label>
+
+      {/* Select Box */}
+      <div
+  onClick={() => setOpen(!open)}
+  className="mt-1 px-3 py-2 bg-white border border-[#D1D5DB] rounded-md text-sm cursor-pointer flex items-center hover:border-[#2563EB] shadow-sm"
+>
+  <span className={value ? "text-[#111827]" : "text-gray-400"}>
+    {value || "Select State"}
+  </span>
+</div>
+
+      {/* Dropdown */}
+      {open && (
+        <div className="absolute z-50 mt-1 w-full bg-white border border-[#E5E7EB] rounded-md shadow-lg overflow-hidden">
+          {/* Search */}
+          <input
+            type="text"
+            placeholder="Search state..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full px-3 py-2 border-b border-[#E5E7EB] focus:outline-none text-sm"
+          />
+
+          {/* List */}
+          <div className="max-h-48 overflow-y-auto">
+            {filteredStates.map((state) => (
+              <div
+                key={state}
+                onClick={() => {
+                  onChange({ target: { value: state } });
+                  setOpen(false);
+                  setSearch("");
+                }}
+                className="px-3 py-2 text-sm hover:bg-[#F3F4F6] cursor-pointer"
+              >
+                {state}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
 
 export default function InvoiceGenerator() {
   const handleGoogleResponse = async (response) => {
@@ -212,7 +276,7 @@ export default function InvoiceGenerator() {
   });
 
   const [items, setItems] = useState([
-    { id: Date.now(), name: "", hsn: "", gstRate: 18, qty: 1, rate: 0 },
+    { id: Date.now(), name: "", hsn: "", gstRate: 18, qty: "", rate: "" },
   ]);
 
   const [optionals, setOptionals] = useState({
@@ -395,7 +459,7 @@ export default function InvoiceGenerator() {
   // --- CALCULATIONS ---
   const calculatedItems = useMemo(() => {
     return items.map((item) => {
-      const baseAmount = item.qty * item.rate;
+      const baseAmount = (item.qty || 0) * (item.rate || 0);
       let taxAmount = 0;
       let cgst = 0,
         sgst = 0,
@@ -663,14 +727,13 @@ export default function InvoiceGenerator() {
 
   return (
     <div className="min-h-screen bg-[#F9FAFB] py-6 sm:py-10 px-3 sm:px-4 font-sans text-[#111827] relative overflow-hidden">
-
-  {/* 🔷 TRIANGLE BACKGROUND */}
-  <div className="absolute top-0 left-0 w-full h-[550px] bg-[#2563EB] clip-triangle z-0"></div>
+      {/* 🔷 TRIANGLE BACKGROUND */}
+      <div className="absolute top-0 left-0 w-full h-[550px] bg-[#2563EB] clip-triangle z-0"></div>
       {/* SUCCESS TRACKING MODAL */}
       {showSuccessModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md flex flex-col overflow-hidden text-center p-6 sm:p-8">
-            <div className="w-16 h-16 bg-[#DBEAFE] rounded-full flex items-center justify-center mx-auto mb-5">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-[2px] p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md flex flex-col overflow-hidden text-center p-6 sm:p-8 animate-[fadeIn_0.3s_ease] scale-100">
+            <div className="w-16 h-16 bg-[#2563EB]/10 rounded-full flex items-center justify-center mx-auto mb-5 shadow-inner">
               <svg
                 className="w-8 h-8 text-[#2563EB]"
                 fill="none"
@@ -701,14 +764,14 @@ export default function InvoiceGenerator() {
             <div className="flex flex-col gap-3">
               <button
                 onClick={authCheck}
-                className="w-full px-5 py-3 text-sm font-medium text-white bg-[#2563EB] hover:bg-blue-700 rounded-lg shadow-sm transition-colors"
+                className="w-full px-5 py-3 text-sm font-semibold text-white bg-[#2563EB] hover:bg-blue-700 rounded-lg shadow-lg hover:shadow-xl transition-all"
               >
                 Save & Track Invoice
               </button>
 
               <button
                 onClick={() => setShowSuccessModal(false)}
-                className="w-full px-5 py-3 text-sm font-medium text-gray-600 bg-gray-50 hover:bg-gray-100 border border-[#E5E7EB] rounded-lg transition-colors"
+                className="w-full px-5 py-3 text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors"
               >
                 Close
               </button>
@@ -719,17 +782,26 @@ export default function InvoiceGenerator() {
 
       {/* REGISTRATION & GOOGLE LOGIN MODAL */}
       {showRegisterModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/70 p-4 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-[2px] p-4">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md flex flex-col overflow-hidden relative">
-            
             {/* Close Button */}
             <button
               onClick={() => setShowRegisterModal(false)}
               className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 bg-gray-50 hover:bg-gray-100 rounded-full p-2 transition-colors z-10"
               aria-label="Close modal"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M6 18L18 6M6 6l12 12"
+                ></path>
               </svg>
             </button>
 
@@ -739,7 +811,8 @@ export default function InvoiceGenerator() {
                   {authMode === "login" ? "Welcome Back" : "Create an Account"}
                 </h3>
                 <p className="text-sm text-gray-500 px-2">
-                  Register to save, track, and manage all your generated invoices securely.
+                  Register to save, track, and manage all your generated
+                  invoices securely.
                 </p>
               </div>
 
@@ -750,58 +823,88 @@ export default function InvoiceGenerator() {
                 {/* ✅ NAME (ONLY REGISTER) */}
                 {authMode === "register" && (
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-semibold text-gray-700 uppercase tracking-wider">Full Name</label>
+                    <label className="text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                      Full Name
+                    </label>
                     <input
                       type="text"
                       value={regForm.name}
-                      onChange={(e) => setRegForm({ ...regForm, name: e.target.value })}
-                      className={`w-full px-4 py-2.5 bg-gray-50 border ${regErrors.name ? 'border-red-500 focus:ring-red-500' : 'border-gray-200 focus:ring-blue-500'} rounded-lg text-sm focus:outline-none focus:ring-2 focus:bg-white transition-colors text-gray-900`}
+                      onChange={(e) =>
+                        setRegForm({ ...regForm, name: e.target.value })
+                      }
+                      className={`w-full px-4 py-2.5 bg-gray-50 border ${regErrors.name ? "border-red-500 focus:ring-red-500" : "border-gray-200 focus:ring-blue-500"} rounded-lg text-sm focus:outline-none focus:ring-2 focus:bg-white transition-colors text-gray-900`}
                       placeholder="John Doe"
                     />
-                    {regErrors.name && <span className="text-[10px] text-red-500">{regErrors.name}</span>}
+                    {regErrors.name && (
+                      <span className="text-[10px] text-red-500">
+                        {regErrors.name}
+                      </span>
+                    )}
                   </div>
                 )}
 
                 {/* ✅ EMAIL (BOTH) */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-semibold text-gray-700 uppercase tracking-wider">Email</label>
+                  <label className="text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                    Email
+                  </label>
                   <input
                     type="email"
                     value={regForm.email}
-                    onChange={(e) => setRegForm({ ...regForm, email: e.target.value })}
-                    className={`w-full px-4 py-2.5 bg-gray-50 border ${regErrors.email ? 'border-red-500 focus:ring-red-500' : 'border-gray-200 focus:ring-blue-500'} rounded-lg text-sm focus:outline-none focus:ring-2 focus:bg-white transition-colors text-gray-900`}
+                    onChange={(e) =>
+                      setRegForm({ ...regForm, email: e.target.value })
+                    }
+                    className={`w-full px-4 py-2.5 bg-gray-50 border ${regErrors.email ? "border-red-500 focus:ring-red-500" : "border-gray-200 focus:ring-blue-500"} rounded-lg text-sm focus:outline-none focus:ring-2 focus:bg-white transition-colors text-gray-900`}
                     placeholder="name@company.com"
                   />
-                  {regErrors.email && <span className="text-[10px] text-red-500">{regErrors.email}</span>}
+                  {regErrors.email && (
+                    <span className="text-[10px] text-red-500">
+                      {regErrors.email}
+                    </span>
+                  )}
                 </div>
 
                 {/* ✅ PHONE (ONLY REGISTER) */}
                 {authMode === "register" && (
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-semibold text-gray-700 uppercase tracking-wider">Phone</label>
+                    <label className="text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                      Phone
+                    </label>
                     <div className="relative flex items-center">
-                      <span className="absolute left-4 text-gray-500 text-sm font-medium border-r border-gray-300 pr-2 py-1">+91</span>
+                      <span className="absolute left-4 text-gray-500 text-sm font-medium border-r border-gray-300 pr-2 py-1">
+                        +91
+                      </span>
                       <input
                         type="tel"
                         value={regForm.phone}
-                        onChange={(e) => setRegForm({ ...regForm, phone: e.target.value })}
-                        className={`w-full pl-16 pr-4 py-2.5 bg-gray-50 border ${regErrors.phone ? 'border-red-500 focus:ring-red-500' : 'border-gray-200 focus:ring-blue-500'} rounded-lg text-sm focus:outline-none focus:ring-2 focus:bg-white transition-colors text-gray-900`}
+                        onChange={(e) =>
+                          setRegForm({ ...regForm, phone: e.target.value })
+                        }
+                        className={`w-full pl-16 pr-4 py-2.5 bg-gray-50 border ${regErrors.phone ? "border-red-500 focus:ring-red-500" : "border-gray-200 focus:ring-blue-500"} rounded-lg text-sm focus:outline-none focus:ring-2 focus:bg-white transition-colors text-gray-900`}
                         placeholder="9876543210"
                       />
                     </div>
-                    {regErrors.phone && <span className="text-[10px] text-red-500">{regErrors.phone}</span>}
+                    {regErrors.phone && (
+                      <span className="text-[10px] text-red-500">
+                        {regErrors.phone}
+                      </span>
+                    )}
                   </div>
                 )}
 
                 {/* ✅ PASSWORD (BOTH) */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-semibold text-gray-700 uppercase tracking-wider">Password</label>
+                  <label className="text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                    Password
+                  </label>
                   <div className="relative">
                     <input
                       type={showPassword ? "text" : "password"}
                       value={regForm.password}
-                      onChange={(e) => setRegForm({ ...regForm, password: e.target.value })}
-                      className={`w-full px-4 py-2.5 pr-10 bg-gray-50 border ${regErrors.password ? 'border-red-500 focus:ring-red-500' : 'border-gray-200 focus:ring-blue-500'} rounded-lg text-sm focus:outline-none focus:ring-2 focus:bg-white transition-colors text-gray-900`}
+                      onChange={(e) =>
+                        setRegForm({ ...regForm, password: e.target.value })
+                      }
+                      className={`w-full px-4 py-2.5 pr-10 bg-gray-50 border ${regErrors.password ? "border-red-500 focus:ring-red-500" : "border-gray-200 focus:ring-blue-500"} rounded-lg text-sm focus:outline-none focus:ring-2 focus:bg-white transition-colors text-gray-900`}
                       placeholder="••••••••"
                     />
                     <button
@@ -810,23 +913,52 @@ export default function InvoiceGenerator() {
                       className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none"
                     >
                       {showPassword ? (
-                        <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                        <svg
+                          className="h-5 w-5"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
+                          />
                         </svg>
                       ) : (
-                        <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        <svg
+                          className="h-5 w-5"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                          />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                          />
                         </svg>
                       )}
                     </button>
                   </div>
-                  {regErrors.password && <span className="text-[10px] text-red-500 leading-tight">{regErrors.password}</span>}
+                  {regErrors.password && (
+                    <span className="text-[10px] text-red-500 leading-tight">
+                      {regErrors.password}
+                    </span>
+                  )}
                 </div>
 
                 {/* ✅ BUTTON */}
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   className="w-full mt-2 bg-[#2563EB] hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg shadow-[0_4px_14px_0_rgba(37,99,235,0.39)] hover:shadow-[0_6px_20px_rgba(37,99,235,0.23)] transition-all active:scale-[0.98]"
                 >
                   {authMode === "login"
@@ -946,11 +1078,7 @@ export default function InvoiceGenerator() {
                 Invoice Generator
               </h1>
               <p className="text-gray-500 text-sm mt-1">
-                {isGST
-                  ? isSameState
-                    ? "GST Invoice (Intra-state)"
-                    : "GST Invoice (Inter-state)"
-                  : "Standard Invoice (Non-GST)"}
+                Create GST & Non-GST Invoices Easily
               </p>
             </div>
 
@@ -1005,9 +1133,14 @@ export default function InvoiceGenerator() {
               </>
             ) : (
               <label className="cursor-pointer w-full h-full flex flex-col items-center justify-center text-gray-400 hover:text-[#2563EB] transition-colors">
-                <span className="text-2xl mb-1">+</span>
-                <span className="text-xs font-semibold uppercase tracking-wider text-center">
-                  Add Logo
+                <span className="text-2xl mb-1">📁</span>
+
+                <span className="text-xs font-semibold text-[#111827]">
+                  Upload Logo
+                </span>
+
+                <span className="text-[10px] text-gray-400 text-center mt-1">
+                  PNG, JPG, WEBP (Max 5MB)
                 </span>
                 <input
                   type="file"
@@ -1095,7 +1228,7 @@ export default function InvoiceGenerator() {
                   }
                 />
               </div>
-              <Select
+              <StateSelect
                 label="State"
                 value={seller.state}
                 onChange={(e) =>
@@ -1165,7 +1298,7 @@ export default function InvoiceGenerator() {
                   }
                 />
               </div>
-              <Select
+              <StateSelect
                 label="State"
                 value={client.state}
                 onChange={(e) =>
@@ -1219,7 +1352,7 @@ export default function InvoiceGenerator() {
                         <input
                           type="text"
                           placeholder="Item description"
-                          className="w-full p-2 bg-transparent border border-transparent hover:border-[#E5E7EB] focus:border-[#2563EB] rounded text-sm focus:outline-none text-[#111827]"
+                          className="w-full p-2 bg-transparent border border-[#D1D5DB] hover:border-[#2563EB] focus:border-[#2563EB] rounded text-sm focus:outline-none text-[#111827]"
                           value={item.name}
                           onChange={(e) =>
                             handleItemChange(item.id, "name", e.target.value)
@@ -1243,11 +1376,11 @@ export default function InvoiceGenerator() {
                         )}
                       </td>
                       {isGST && (
-                        <td className="p-2 align-top pt-3">
+                        <td className="p-2 align-top">
                           <input
                             type="text"
                             placeholder="HSN"
-                            className="w-full p-2 bg-transparent border border-transparent hover:border-[#E5E7EB] focus:border-[#2563EB] rounded text-sm focus:outline-none text-[#111827]"
+                            className="w-full p-2 bg-transparent border border-[#D1D5DB] hover:border-[#2563EB] focus:border-[#2563EB] rounded text-sm focus:outline-none text-[#111827]"
                             value={item.hsn}
                             onChange={(e) =>
                               handleItemChange(item.id, "hsn", e.target.value)
@@ -1255,41 +1388,45 @@ export default function InvoiceGenerator() {
                           />
                         </td>
                       )}
-                      <td className="p-2 align-top pt-3">
+                      <td className="p-2 align-top">
                         <input
                           type="number"
                           min="1"
-                          className="w-full p-2 bg-transparent border border-transparent hover:border-[#E5E7EB] focus:border-[#2563EB] rounded text-sm focus:outline-none text-[#111827]"
-                          value={item.qty}
+                          className="w-full p-2 bg-transparent border border-[#D1D5DB] hover:border-[#2563EB] focus:border-[#2563EB] rounded text-sm focus:outline-none text-[#111827]"
+                          value={item.qty || ""}
                           onChange={(e) =>
                             handleItemChange(
                               item.id,
                               "qty",
-                              Number(e.target.value),
+                              e.target.value === ""
+                                ? ""
+                                : Number(e.target.value),
                             )
                           }
                         />
                       </td>
-                      <td className="p-2 align-top pt-3">
+                      <td className="p-2 align-top">
                         <input
                           type="number"
                           min="0"
-                          className="w-full p-2 bg-transparent border border-transparent hover:border-[#E5E7EB] focus:border-[#2563EB] rounded text-sm focus:outline-none text-[#111827]"
-                          value={item.rate}
+                          className="w-full p-2 bg-transparent border border-[#D1D5DB] hover:border-[#2563EB] focus:border-[#2563EB] rounded text-sm focus:outline-none text-[#111827]"
+                          value={item.rate || ""}
                           onChange={(e) =>
                             handleItemChange(
                               item.id,
                               "rate",
-                              Number(e.target.value),
+                              e.target.value === ""
+                                ? ""
+                                : Number(e.target.value),
                             )
                           }
                         />
                       </td>
 
                       {isGST && (
-                        <td className="p-2 align-top pt-3">
+                        <td className="p-2 align-top">
                           <select
-                            className="w-full p-2 bg-transparent border border-transparent hover:border-[#E5E7EB] focus:border-[#2563EB] rounded text-sm focus:outline-none text-[#111827]"
+                            className="w-full p-2 bg-transparent border border-[#D1D5DB] hover:border-[#2563EB] focus:border-[#2563EB] rounded text-sm focus:outline-none text-[#111827]"
                             value={item.gstRate}
                             onChange={(e) =>
                               handleItemChange(
@@ -1336,7 +1473,7 @@ export default function InvoiceGenerator() {
                       <td className="p-2 text-right font-medium text-sm align-top pt-4">
                         ₹{item.totalAmount.toFixed(2)}
                       </td>
-                      <td className="p-2 text-right align-top pt-3">
+                      <td className="p-2 text-right align-top">
                         <button
                           onClick={() => removeItem(item.id)}
                           className="text-[#E5E7EB] hover:text-red-500 transition-colors px-2"

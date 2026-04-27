@@ -4,31 +4,39 @@ import React, { useState } from 'react';
 const faqData = [
   {
     question: "What is an online invoice generator?",
-    answer: "An online invoice generator is a free, web-based tool that helps businesses, freelancers, and agencies create professional invoices in seconds. It eliminates the need for manual preparation in spreadsheets or Word documents. You can customize templates, auto-calculate totals, and instantly produce a polished PDF ready to send to your clients."
+    answer: "An online invoice generator is a web-based invoice maker that helps businesses, freelancers, and agencies create professional invoices instantly. You can add items, apply taxes, and download a ready-to-send PDF invoice without using Excel or Word."
   },
   {
-    question: "Can I create both GST and Non-GST invoices?",
-    answer: "Yes, absolutely! Our platform is specifically built for Indian businesses. You can seamlessly switch between GST and Non-GST billing formats. For GST invoices, the generator automatically handles complex tax calculations including CGST, SGST, and IGST based on your state and client details, ensuring you remain 100% compliant."
+    question: "Can I create GST and non-GST invoices in India?",
+    answer: "Yes. This invoice generator is designed for Indian users and supports both GST and non-GST invoices. It automatically calculates CGST, SGST, or IGST based on your billing details, helping you create accurate and compliant invoices."
   },
   {
-    question: "Which is the best free invoice generator in India?",
-    answer: "While there are many tools available, ours is heavily optimized for fast, frictionless billing specifically for the Indian market. It is considered a top-tier choice because it requires no login, handles precise GST auto-calculations, and allows unlimited, high-quality PDF downloads completely for free."
+    question: "Do I need to sign up to create an invoice?",
+    answer: "No signup is required to create and download invoices. You can instantly generate a free invoice without login. However, if you want to save and manage invoices (like tracking paid or unpaid status), you can use the optional save feature."
   },
   {
-    question: "Do I need to sign up to make an invoice for free?",
-    answer: "No login or account creation is required to use our free invoice generator. We believe in saving you time. You can instantly start entering your business details, adding your line items, and downloading your invoice without any friction or hidden paywalls."
+    question: "Can I save and manage my invoices?",
+    answer: "Yes. You can save your invoices securely and access them later. This allows you to track payment status (paid or unpaid), manage records, and organize your billing efficiently."
   },
   {
     question: "Can I add my company logo and signature?",
-    answer: "Yes, our free invoice maker allows you to easily upload your brand logo and attach a digital signature. Customizing your invoice with your branding helps you maintain a highly professional identity and builds trust with your clients on every bill you send."
+    answer: "Yes, you can upload your company logo and add a digital signature to your invoice. This helps create a professional, branded invoice that builds trust with your clients."
   },
   {
-    question: "Is my financial data secure on this platform?",
-    answer: "Your privacy is our top priority. All invoice generation happens locally within your browser. We do not store your sensitive financial data, client information, or business details on our servers, ensuring your billing information remains completely private and secure."
+    question: "Is this invoice generator free to use?",
+    answer: "Yes, the invoice generator is completely free. You can create unlimited invoices and download high-quality PDF invoices without any hidden charges."
   },
   {
-    question: "How do I share the generated invoice with my clients?",
-    answer: "Once you have filled in all the necessary details and reviewed the auto-calculations, you can instantly download your invoice as a high-quality, print-ready PDF document. From there, you can easily attach it to an email or send it directly to your client via WhatsApp."
+    question: "Is my data secure?",
+    answer: "Your data is handled securely. Invoice generation can be done instantly without storing data. If you choose to save invoices, your data is stored securely so you can access and manage it later."
+  },
+  {
+    question: "How do I share the invoice with my client?",
+    answer: "After creating your invoice, you can download it as a high-quality PDF and share it بسهولة via email or messaging apps like WhatsApp."
+  },
+  {
+    question: "Does this tool provide professional invoice templates?",
+    answer: "Yes. The tool generates clean, modern, and business-ready invoice PDFs that are suitable for freelancers, agencies, and companies. The layout is designed to look professional and not generic."
   }
 ];
 
