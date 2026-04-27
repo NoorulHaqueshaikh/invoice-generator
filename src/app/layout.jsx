@@ -10,9 +10,9 @@ const inter = Inter({
 });
 
 export const metadata = {
-  title: "Andicode Invoice",
+  title: "Free Invoice Generator (GST & Non-GST) | Andicode Invoice",
   description:
-  "Free online invoice generator to create GST and non-GST invoices instantly. Add your logo, auto-calculate taxes, download professional PDF invoices, and manage billing easily—no login required. Ideal for freelancers and businesses in India.",
+    "Create professional invoices online with this free invoice generator. Generate GST and non-GST invoices, add your logo, calculate taxes automatically, and download clean PDF invoices instantly—no login required. Ideal for freelancers and businesses in India.",
   
   verification: {
     google: "b0YkiHWRwBZMc32FZhPvvpG7o-XF9g6ZLJXJ_TRYnvI",
