@@ -195,7 +195,7 @@ const StateSelect = ({ label, value, onChange, required }) => {
   );
 };
 
-export default function InvoiceGenerator() {
+export default function InvoiceGenerator({ title, description }) {
   const handleGoogleResponse = async (response) => {
     try {
       await axios.post(
@@ -728,7 +728,19 @@ export default function InvoiceGenerator() {
   return (
     <div className="min-h-screen bg-[#F9FAFB] py-6 sm:py-10 px-3 sm:px-4 font-sans text-[#111827] relative overflow-hidden">
       {/* 🔷 TRIANGLE BACKGROUND */}
-      <div className="absolute top-0 left-0 w-full h-[550px] bg-[#2563EB] clip-triangle z-0"></div>
+      <div className="absolute top-0 left-0 w-full h-[550px] bg-[#2563EB] clip-triangle z-0 flex items-center justify-center px-4">
+  <div className="max-w-3xl text-center text-white -translate-y-30">
+    
+    <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight">
+      {title}
+    </h1>
+
+    <p className="mt-4 text-sm sm:text-base text-blue-100 leading-relaxed">
+      {description}
+    </p>
+
+  </div>
+</div>
       {/* SUCCESS TRACKING MODAL */}
       {showSuccessModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-[2px] p-4">
