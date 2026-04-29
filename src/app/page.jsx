@@ -6,6 +6,10 @@ import HowItWorks from "@/components/home/HowItWorks";
 import FAQ from "@/components/home/FAQ";
 import Footer from "@/components/home/Footer";
 import Script from "next/script";
+import WhyChooseTool from "@/components/home/WhyChooseTool";
+import InvoiceFormat from "@/components/home/InvoiceFormat";
+import IgVsEt from "@/components/home/IgVsEt";
+import InvoiceMistakes from "@/components/home/InvoiceMistakes";
 
 const faqData = [
   {
@@ -116,6 +120,10 @@ function page() {
       />
       <Features />
       <HowItWorks />
+      <WhyChooseTool/>
+      <InvoiceFormat/>
+      <IgVsEt/>
+      <InvoiceMistakes/>
       <FAQ data={faqData} />
       <Footer />
     </div>

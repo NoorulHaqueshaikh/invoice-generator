@@ -726,7 +726,7 @@ export default function InvoiceGenerator({ title, description }) {
   };
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB] py-6 sm:py-10 px-3 sm:px-4 font-sans text-[#111827] relative overflow-hidden">
+    <div id="invoice-top" className="min-h-screen bg-[#F9FAFB] py-6 sm:py-10 px-3 sm:px-4 font-sans text-[#111827] relative overflow-hidden">
       {/* 🔷 TRIANGLE BACKGROUND */}
       <div className="absolute top-0 left-0 w-full h-[550px] bg-[#2563EB] clip-triangle z-0 flex items-center justify-center px-4">
   <div className="max-w-3xl text-center text-white -translate-y-30">

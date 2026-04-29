@@ -110,11 +110,12 @@ function HowItWorks() {
             ))}
           </div>
         </div>
+
         
         {/* Call to Action Button */}
         <div className="mt-20 text-center">
           <a 
-            href="/create" 
+            href="#invoice-top" 
             className="inline-flex items-center justify-center px-8 py-4 text-base font-bold text-white transition-all duration-300 bg-[#2563EB] rounded-xl hover:bg-[#1e4eb8] shadow-sm hover:shadow-xl hover:shadow-[#2563EB]/20 hover:-translate-y-1"
           >
             Create Invoice Now
