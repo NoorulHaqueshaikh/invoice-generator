@@ -39,7 +39,7 @@ function Navbar() {
           {/* Desktop Menu - About Us */}
           <div className="hidden md:flex items-center">
             <a 
-              href="/about" 
+              href="/about-us" 
               className="text-white hover:text-[#111827] hover:bg-[#DBEAFE] px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
             >
               About Us
