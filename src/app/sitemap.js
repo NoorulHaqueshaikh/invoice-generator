@@ -8,11 +8,5 @@ export default function sitemap() {
       changeFrequency: "daily",
       priority: 1,
     },
-    {
-      url: "https://invoice.andicode.com/about-us",
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.8,
-    },
   ];
 }
