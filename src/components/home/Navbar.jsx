@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import Link from "next/link"; // Imported Next.js Link
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -31,19 +32,21 @@ function Navbar() {
             <svg className="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
-            <a href="/" className="text-xl font-bold tracking-tight text-white flex items-center">
+            {/* Replaced <a> with <Link> */}
+            <Link href="/" className="text-xl font-bold tracking-tight text-white flex items-center">
               andicode<span className="font-normal opacity-90 ml-1">invoice</span>
-            </a>
+            </Link>
           </div>
 
           {/* Desktop Menu - About Us */}
           <div className="hidden md:flex items-center">
-            <a 
+            {/* Replaced <a> with <Link> */}
+            <Link 
               href="/about-us" 
               className="text-white hover:text-[#111827] hover:bg-[#DBEAFE] px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
             >
               About Us
-            </a>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -69,12 +72,14 @@ function Navbar() {
       {isOpen && (
         <div className="md:hidden bg-[#2563EB] relative z-10 border-t border-white/10 shadow-inner">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <a 
-              href="/about" 
+            {/* Replaced <a> with <Link> */}
+            <Link 
+              href="/about-us" 
+              onClick={() => setIsOpen(false)} // Added this so the menu closes when a link is clicked
               className="block px-3 py-2 text-white hover:bg-[#1e4eb8] rounded-md text-base font-medium transition-colors"
             >
               About Us
-            </a>
+            </Link>
           </div>
         </div>
       )}
