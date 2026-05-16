@@ -54,7 +54,7 @@ function Footer() {
             <div className="flex flex-wrap justify-center gap-x-6 gap-y-3 text-sm font-medium text-blue-100">
               <a href="/" className="hover:text-white transition-colors">Home</a>
               <span className="text-blue-300 hidden sm:inline">|</span>
-              <a href="/about" className="hover:text-white transition-colors">About Us</a>
+              <a href="/about-us" className="hover:text-white transition-colors">About Us</a>
               <span className="text-blue-300 hidden sm:inline">|</span>
               <a href="/blog" className="hover:text-white transition-colors">Blog</a>
             </div>
